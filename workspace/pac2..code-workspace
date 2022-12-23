@@ -8,18 +8,10 @@
 		"version": "0.2.0",
 		"configurations": [
 			{
-				"name": "Python: TEST.py",
+				"name": "Python: pacman.py",
 				"type": "python",
 				"request": "launch",
-				"program": "${workspaceFolder}/component_test/TEST.py",
-				"env": {},
-				"console": "integratedTerminal"
-			},
-			{
-				"name": "Python: WEEKLY_MAIL.py",
-				"type": "python",
-				"request": "launch",
-				"program": "${workspaceFolder}/component_test/WEEKLY_MAIL.py",
+				"program": "${workspaceFolder}/app/pacman.py",
 				"env": {},
 				"console": "integratedTerminal"
 			},
