@@ -1,2 +1,4 @@
 # pac2
- pacman vs
+
+Maze game
+ 
