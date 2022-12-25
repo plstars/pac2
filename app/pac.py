@@ -6,6 +6,8 @@ from pgzero.actor import Actor
 from pgzero.clock import clock
 from pgzero.keyboard import keys
 from pgzero.loaders import sounds
+from pgzero.rect import Rect
+
 import random
 
 WIDTH = 640
@@ -27,6 +29,22 @@ HEIGHT = WORLD_SIZE * BLOCK_SIZE
 
 SPEED = 2
 GHOST_SPEED = 1
+WELCOME_SCREEN = '''
+Welcome to Pacman!
+Please enter your name:
+'''
+
+leaderboard = '''
+Leaderboard:
+1. 1000
+2. 900
+3. 800
+4. 700
+'''
+
+ALPHANUMERIC_KEYS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",]
+
+FONT_DEFULAT = 'fontname="chalkduster", fontsize=30, owidth=1, ocolor="blue"'
 
 # An array containing the world tiles
 
@@ -64,6 +82,9 @@ pacman.score = 0
 pacman.lives = 3
 pacman.powerup = 0
 pacman.freeze = False
+pacman.initialised = False
+pacman.player = ""
+pacman.name_saved = False
 pacman.food_left = 0
 for row in world:
     pacman.food_left += row.count('.')
@@ -71,6 +92,9 @@ for row in world:
 ghosts = []
 # Where do the ghosts start?
 ghost_start_pos = []
+
+RED = 200, 0, 0
+BOX = Rect((50, 380), (200, 75))
 
 # Your level will contain characters, they map
 # to the following images
@@ -90,7 +114,7 @@ def check_world():
     if depth != WORLD_SIZE:
         raise Exception("World is not the right depth")
         res = False
-    for row in world: 
+    for row in world:
         if len(row) != width:
             raise Exception("World rows are not all the same width")
             res = False
@@ -152,22 +176,36 @@ def make_ghost_actors():
                 world[y] = world[y][:x] + "." + world[y][x + 1:]
 
 
+def defualt_text(text, topleft=(0, 0), fontsize=30, fontname="chalkduster", font_color="blue"):
+    screen.draw.text(text, topleft=topleft, fontname=fontname, fontsize=fontsize, owidth=1, ocolor=font_color)  # type: ignore # noqa: F821
+
+
 def draw():
-    screen.clear()                                                                     # type: ignore # noqa: F821
-    for y, row in enumerate(world):
-        for x, block in enumerate(row):
-            image = char_to_image.get(block, None)
-            if image:
-                screen.blit(char_to_image[block], (x * BLOCK_SIZE, y * BLOCK_SIZE))    # type: ignore # noqa: F821
-    pacman.draw()
-    for g in ghosts:
-        g.draw()
+    screen.clear()                                                                         # type: ignore # noqa: F821
 
-    if pacman.banner and pacman.banner_counter > 0:
-        screen.draw.text(pacman.banner, center=(WIDTH / 2, HEIGHT / 2), fontsize=120)   # type: ignore # noqa: F821
+    if pacman.name_saved and not pacman.initialised:
+        defualt_text("Press space to start", topleft=(60, 500))  # type: ignore # noqa: F821
 
-    screen.draw.text("Score: %s" % pacman.score, topleft=(8, 4), fontsize=40)           # type: ignore # noqa: F821
-    screen.draw.text("Lives: %s" % pacman.lives, topright=(WIDTH - 8, 4), fontsize=40)  # type: ignore # noqa: F821
+    if not pacman.initialised:
+        screen.draw.rect(BOX, RED)                                                         # type: ignore # noqa: F821
+        defualt_text(WELCOME_SCREEN, topleft=(50, 4))
+        defualt_text(leaderboard, topleft=(50, 100))
+        defualt_text(pacman.player, topleft=(60, 400))
+    else:
+        for y, row in enumerate(world):
+            for x, block in enumerate(row):
+                image = char_to_image.get(block, None)
+                if image:
+                    screen.blit(char_to_image[block], (x * BLOCK_SIZE, y * BLOCK_SIZE))    # type: ignore # noqa: F821
+        pacman.draw()
+        for g in ghosts:
+            g.draw()
+
+        if pacman.banner and pacman.banner_counter > 0:
+            screen.draw.text(pacman.banner, center=(WIDTH / 2, HEIGHT / 2), fontsize=120)   # type: ignore # noqa: F821
+
+        screen.draw.text("Score: %s" % pacman.score, topleft=(8, 4), fontsize=40)           # type: ignore # noqa: F821
+        screen.draw.text("Lives: %s" % pacman.lives, topright=(WIDTH - 8, 4), fontsize=40)  # type: ignore # noqa: F821
 
 
 def blocks_ahead_of(sprite, dx, dy):
@@ -295,6 +333,21 @@ def on_key_down(key):
         pacman.dy = -SPEED
     if key == keys.DOWN:
         pacman.dy = SPEED
+    if not pacman.initialised:
+        if not pacman.name_saved:
+            if key == keys.BACKSPACE:
+                pacman.player = pacman.player[:-1]
+            elif key == keys.RETURN and len(pacman.player) > 0:
+                pacman.name_saved = True
+                print("Name Saved")
+            elif 65 <= key.value <= 127:
+                pacman.player += chr(key.value)
+                print(pacman.player)
+
+        if pacman.name_saved and key == keys.SPACE:
+            print(pacman.player)
+            pacman.initialised = True
+            sounds.pacman_beginning.play()
 
 
 def periodic():
@@ -309,8 +362,6 @@ check_world()
 clock.schedule_interval(periodic, 0.2)
 
 make_ghost_actors()
-
-sounds.pacman_beginning.play()
 
 pgzrun.go()
 
