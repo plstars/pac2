@@ -134,21 +134,21 @@ def make_ghost_actors():
 
 
 def draw():
-    screen.clear()
+    screen.clear()                                                                     # type: ignore # noqa: F821
     for y, row in enumerate(world):
         for x, block in enumerate(row):
             image = char_to_image.get(block, None)
             if image:
-                screen.blit(char_to_image[block], (x * BLOCK_SIZE, y * BLOCK_SIZE))
+                screen.blit(char_to_image[block], (x * BLOCK_SIZE, y * BLOCK_SIZE))    # type: ignore # noqa: F821
     pacman.draw()
     for g in ghosts:
         g.draw()
 
     if pacman.banner and pacman.banner_counter > 0:
-        screen.draw.text(pacman.banner, center=(WIDTH / 2, HEIGHT / 2), fontsize=120)
+        screen.draw.text(pacman.banner, center=(WIDTH / 2, HEIGHT / 2), fontsize=120)   # type: ignore # noqa: F821
 
-    screen.draw.text("Score: %s" % pacman.score, topleft=(8, 4), fontsize=40)
-    screen.draw.text("Lives: %s" % pacman.lives, topright=(WIDTH - 8, 4), fontsize=40)
+    screen.draw.text("Score: %s" % pacman.score, topleft=(8, 4), fontsize=40)           # type: ignore # noqa: F821
+    screen.draw.text("Lives: %s" % pacman.lives, topright=(WIDTH - 8, 4), fontsize=40)  # type: ignore # noqa: F821
 
 
 def blocks_ahead_of(sprite, dx, dy):
