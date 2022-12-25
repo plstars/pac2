@@ -50,7 +50,7 @@ world = [
     '=......=...=...=...=',
     '=......=...=...=...=',
     '=......=...=...=...=',
-    '======================',
+    '====================',
 ]
 
 # Our sprites
@@ -81,6 +81,25 @@ char_to_image = {
     'g': 'ghost1.png',
     'G': 'ghost2.png',
 }
+
+
+def check_world():
+    res = True
+    depth = len(world)
+    width = len(world[0])
+    if depth != WORLD_SIZE:
+        raise Exception("World is not the right depth")
+        res = False
+    for row in world: 
+        if len(row) != width:
+            raise Exception("World rows are not all the same width")
+            res = False
+        for char in row:
+            if char not in char_to_image:
+                raise Exception("Unknown character in world: " + char)
+                res = False
+
+    return res
 
 
 def eat_food():
@@ -284,6 +303,8 @@ def periodic():
 
 # Game set up
 
+
+check_world()
 
 clock.schedule_interval(periodic, 0.2)
 
