@@ -8,10 +8,10 @@
 		"version": "0.2.0",
 		"configurations": [
 			{
-				"name": "Python: pac.py",
+				"name": "Python: pacman.py",
 				"type": "python",
 				"request": "launch",
-				"program": "${workspaceFolder}/app/pac.py",
+				"program": "${workspaceFolder}/app/pacman.py",
 				"env": {},
 				"console": "integratedTerminal"
 			},
