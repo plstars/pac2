@@ -42,10 +42,6 @@ Leaderboard:
 4. 700
 '''
 
-ALPHANUMERIC_KEYS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",]
-
-FONT_DEFULAT = 'fontname="chalkduster", fontsize=30, owidth=1, ocolor="blue"'
-
 # An array containing the world tiles
 
 world = [
